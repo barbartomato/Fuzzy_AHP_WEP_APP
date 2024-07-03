@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuzzy AHP</title>
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            background-color: #343a40;
+            padding-top: 1rem;
+        }
+
+        .sidebar .nav-link {
+            color: #ffffff;
+        }
+
+        .sidebar .nav-link.active {
+            background-color: #007bff;
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-2 d-none d-md-block sidebar">
+                <div class="sidebar-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Beranda</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/kriteria">Pilih Kriteria</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/process">Proses AHP</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+                <div
+                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Dashboard Fuzzy AHP</h1>
+                </div>
+                <h1 style="text-align: center; margin-block: 40px;">Proses Fuzzy AHP</h1>
+
+                <!-- Button trigger modal-->
+                <div class="w-100 d-flex">
+
+                    <button onclick="information_modal_trigger()" type="button"
+                        class="btn btn-success mx-4 mb-4 ml-auto" data-toggle="modal" data-target="#exampleModal">
+                        Tambah Data Jalan+
+                    </button>
+                </div>
+
+                <!-- MODAL FOR RESULT OF THE PROCESS AHP-->
+
+
+                <!-- Modal  For Input Jalan Data-->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Tambah Data Jalan</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" id="modal_body">
+
+
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Kembali</button>
+                                <button type="button" class="btn btn-success" onclick="add_data()">Tambah</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="display: none;" class="mx-4" id="permukaan_perkerasan_title">Kriteria Permukaan Perkerasan
+                </h3>
+                <div class="mx-4" id="permukaan_perkerasan">
+
+                </div>
+
+                <h3 style="display: none;" class="mx-4" id="retak_retak_title">Kriteria Retak Retak</h3>
+                <div class="mx-4" id="retak_retak">
+
+                </div>
+
+                <h3 style="display: none;" class="mx-4" id="kerusakan_lain_title">Kriteria Permukaan Keruskan Lain</h3>
+                <div class="mx-4" id="kerusakan_lain">
+
+                </div>
+
+                <h3 style="display: none;" class="mx-4" id="insfrastruktur_lain_title">Kriteria Infrastruktur Lain</h3>
+                <div class="mx-4" id="infrastruktur_lain">
+
+                </div>
+
+                <button onclick="process_fuzzy()" class="btn btn-success mx-4">Proses Data
+                    Jalan</button>
+                <!-- Add your main content here -->
+            </main>
+        </div>
+    </div>
+
+
+</body>
+
+<script src=" https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</html>
+
+<script>
+
+    const street_list = [];
+    const body = JSON.parse(sessionStorage.getItem('body'));
+
+    function buildModal(data) {
+
+
+        // Example: Assuming data is JSON with modal content
+        const modalContent = `
+            <div class="modal fade" id="dynamicModal" tabindex="-1" role="dialog" aria-labelledby="dynamicModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="dynamicModalLabel">HASIL PROSES AHP</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="fuzzy_result">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                </div>
+                </div>
+            </div>
+            </div>
+        `;
+
+        // Append modal content to the body
+        document.body.insertAdjacentHTML('beforeend', modalContent);
+
+        const fuzzy_result = document.getElementById('fuzzy_result');
+
+        let sorted_rank = []
+        for (let idx = 1; idx <= data.length; idx++) {
+            var nama_jalan_value = street_list[idx - 1]
+            sorted_rank.push({ idx: idx, value: data[idx - 1], name: nama_jalan_value })
+        }
+        sorted_rank.sort((a, b) => b.value - a.value)
+        for (let idx = 1; idx <= sorted_rank.length; idx++) {
+            var childElement = document.createElement('p');
+            childElement.textContent = `${sorted_rank[idx - 1].name} - ${sorted_rank[idx - 1].value}`;
+            fuzzy_result.appendChild(childElement)
+        }
+
+        // Show the modal
+        $('#dynamicModal').modal('show');
+    }
+
+    function formatString(inputString) {
+        return inputString.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+    }
+
+    // ** INITIAL VALUE FOR DIV KRITERIA
+    const permukaan_perkerasan = document.getElementById("permukaan_perkerasan")
+    const retak_retak = document.getElementById("retak_retak")
+    const kerusakan_lain = document.getElementById("kerusakan_lain")
+    const infrastruktur_lain = document.getElementById("infrastruktur_lain")
+
+    if (Object.keys(JSON.parse(sessionStorage.getItem('body'))).length === 0) {
+        alert("Data Yang ingin di proses tidak valid");
+        window.location.href = "/";
+    }
+
+
+    // THE INNER CONTENT OF THE DIV EACH KRITERIA
+    let header_table = " <table class='table table-striped table-bordered'> <thead class='thead-dark'> <tr>";
+
+
+    let permukaan_perkerasan_content = header_table;
+    let retak_retak_content = header_table;
+    let kerusakan_lain_content = header_table;
+    let infrastruktur_lain_content = header_table;
+
+    // Loop FOR TABLE HEADER
+    Object.keys(body).forEach(kriteria => {
+
+        if (kriteria === 'permukaan_perkerasan') {
+            permukaan_perkerasan_content += "<th>Nama Jalan</th>";
+        }
+        if (kriteria === 'retak_retak') {
+            retak_retak_content += "<th>Nama Jalan</th>";
+        }
+        if (kriteria === 'kerusakan_lain') {
+            kerusakan_lain_content += "<th>Nama Jalan</th>";
+        }
+        if (kriteria === 'insfrastruktur_lain') {
+            infrastruktur_lain_content += "<th>Nama Jalan</th>";
+        }
+
+        // Loop through the inner keys (susunan, kondisi_keadaan, etc.)
+        Object.keys(body[kriteria]).forEach(subKriteria => {
+            const value = body[kriteria][subKriteria];
+            if (value === false) {
+                // Skip further processing if value is false
+                return;
+            }
+
+            if (kriteria === 'permukaan_perkerasan') {
+                permukaan_perkerasan_content += `
+                    <th>${formatString(subKriteria)}</th>
+                `
+                document.getElementById("permukaan_perkerasan_title").style.display = "block";
+            }
+
+            if (kriteria === 'retak_retak') {
+                retak_retak_content += `
+                    <th>${formatString(subKriteria)}</th>
+                `
+                document.getElementById("retak_retak_title").style.display = "block";
+            }
+
+            if (kriteria === 'kerusakan_lain') {
+                kerusakan_lain_content += `
+                    <th>${formatString(subKriteria)}</th>
+                `
+                document.getElementById("kerusakan_lain_title").style.display = "block";
+            }
+
+            if (kriteria === 'insfrastruktur_lain') {
+                infrastruktur_lain_content += `
+                    <th>${formatString(subKriteria)}</th>
+                `
+                document.getElementById("insfrastruktur_lain_title").style.display = "block";
+            }
+        })
+
+
+    });
+
+    permukaan_perkerasan_content += `</tr> </thead> <tbody id="permukaan_perkerasan_tbody"> </tbody> </table> <table class="table table-striped table-bordered"> <thead class="thead-dark"> <tr> </tbody> </table>`;
+    retak_retak_content += `</tr> </thead> <tbody id="retak_retak_tbody"> </tbody> </table>`;
+    kerusakan_lain_content += `</tr> </thead> <tbody id="kerusakan_lain_tbody"> </tbody> </table>`;
+    infrastruktur_lain_content += `</tr> </thead> <tbody id="infrastruktur_lain_tbody"> </tbody> </table>`;
+
+    permukaan_perkerasan.innerHTML = permukaan_perkerasan_content;
+    retak_retak.innerHTML = retak_retak_content;
+    kerusakan_lain.innerHTML = kerusakan_lain_content;
+    infrastruktur_lain.innerHTML = infrastruktur_lain_content;
+
+
+    // this is used to post data
+    let post_data = {
+        "permukaan_perkerasan": [],
+        "retak_retak": [],
+        "kerusakan_lain": [],
+        "insfrastruktur_lain": []
+    }
+
+    function render_row_table() {
+
+        // ** INITIAL  VALUE FOR OPTION LIST
+        const select_value_list = {
+            susunan: [{ name: "Baik/Rapat", value: 0 }, { name: "Kasar", value: 1 }],
+            kondisi_keadaan: [{ name: "Baik/Tidak ada kelainan", value: 0 }, { name: "Aspal berlebihan", value: 0.33 }, { name: "Lepas", value: 0.66 }, { name: "Hancur", value: 1 }],
+            penurunan: [{ name: "Tidak ada", value: 0 }, { name: " < 10 %", value: 0.33 }, { name: "10 - 30 %", value: 0.66 }, { name: " > 30 %", value: 1 }],
+            tambalan: [{ name: "Tidak ada", value: 0 }, { name: " < 10 %", value: 0.33 }, { name: "10 - 30 %", value: 0.66 }, { name: " > 30 %", value: 1 }],
+            jenis: [{ name: "Tidak Ada", value: 0 }, { name: "Tidak Berhubungan", value: 0.33 }, { name: "Saling Berhubungan (Berbidang Luas)", value: 0.66 }, { name: "Saling Berhubungan (Berbidang Sempit)", value: 1 }],
+            lebar: [{ name: "Tidak Ada", value: 0 }, { name: "Halus < 1 mm", value: 0.33 }, { name: "Sedang 1 - 5 mm", value: 0.66 }, { name: "Lebar > 5 mm", value: 1 }],
+            persen_luas: [{ name: "Tidak Ada", value: 0 }, { name: "< 10% Luas", value: 0.33 }, { name: "10 - 30% Luas", value: 0.66 }, { name: "> 30% Luas", value: 1 }],
+            jumlah_lubang: [{ name: "Tidak Ada", value: 0 }, { name: "1/100 M", value: 0.33 }, { name: "2-5/100 M", value: 0.66 }, { name: "> 5/100 M", value: 1 }],
+            ukuran_lubang: [{ name: "Tidak Ada", value: 0 }, { name: "Kecil-Dangkal", value: 0.33 }, { name: "Kecil-Dalam", value: 0.5 }, { name: "Besar-Dangkal", value: 0.75 }, { name: "Besar-Dalam", value: 1 }],
+            bekas_roda: [{ name: "Tidak Ada", value: 0 }, { name: "<input 1 cm", value: 0.25 }, { name: "1 - 3 cm", value: 0.5 }, { name: "3 cm", value: 1 }],
+            kerusakan_tepi: [{ name: "Tidak Ada", value: 0 }, { name: "Ringan", value: 0.5 }, { name: "Berat", value: 1 }],
+            kondisi_bahu: [{ name: "Tidak Ada", value: 0 }, { name: "Baik/Rata", value: 0.33 }, { name: "Erosi Ringan", value: 0.66 }, { name: "Erosi Barat", value: 1 }],
+            permukaan_bahu: [{ name: "Tidak Ada", value: 0 }, { name: "Diatas Permukaan Jalan", value: 0.25 }, { name: "Rata dengan permukaan jalan", value: 0.5 }, { name: "Dibawah permukaan jalan", value: 0.75 }, { name: "10 cm dibawah permukaan jalan", value: 1 }],
+            kondisi_saluran_samping: [{ name: "Tidak Ada", value: 0 }, { name: "Bersih", value: 0.25 }, { name: "Tertutup/Tersumbat", value: 0.5 }, { name: "Erosi", value: 1 }],
+            kerusakan_lereng: [{ name: "Tidak Ada", value: 0 }, { name: "Longsor / Runtuh", value: 1 }],
+            trotoar: [{ name: "Tidak Ada", value: 0 }, { name: "Baik/Aman", value: 0.5 }, { name: "Berbahaya", value: 1 }]
+        }
+
+        // ** INITIAL  VALUE FOR OPTION LIST
+        let permukaan_perkerasan_row_content = "";
+        let retak_retak_row_content = "";
+        let kerusakan_lain_row_content = "";
+        let infrastruktur_lain_row_content = "";
+
+        Object.keys(post_data).forEach(kriteria => {
+
+            if (post_data[kriteria].length > 0) {
+                post_data[kriteria].forEach((obj, index) => {
+
+                    if (kriteria === 'permukaan_perkerasan') {
+                        permukaan_perkerasan_row_content += `<tr>`
+                        permukaan_perkerasan_row_content += `<td>${street_list[index]}</td>`
+                    }
+                    if (kriteria === 'retak_retak') {
+                        retak_retak_row_content += `<tr>`
+                        retak_retak_row_content += `<td>${street_list[index]}</td>`
+                    }
+                    if (kriteria === 'kerusakan_lain') {
+                        kerusakan_lain_row_content += `<tr>`
+                        kerusakan_lain_row_content += `<td>${street_list[index]}</td>`
+                    }
+                    if (kriteria === 'insfrastruktur_lain') {
+                        infrastruktur_lain_row_content += `<tr>`
+                        infrastruktur_lain_row_content += `<td>${street_list[index]}</td>`
+                    }
+
+                    Object.keys(obj).forEach((key) => {
+
+                        const property_name = key.replace(/_\d+$/, '');
+
+                        if (body[kriteria][property_name] === true) {
+
+                            const value_name = select_value_list[property_name].filter(object => object.value == obj[key])[0].name
+
+                            if (kriteria === 'permukaan_perkerasan') permukaan_perkerasan_row_content += `<td>${value_name}</td> `
+                            if (kriteria === 'retak_retak') retak_retak_row_content += `<td>${value_name}</td> `
+                            if (kriteria === 'kerusakan_lain') kerusakan_lain_row_content += `<td>${value_name}</td> `
+                            if (kriteria === 'insfrastruktur_lain') infrastruktur_lain_row_content += `<td>${value_name}</td> `
+
+                        }
+
+                    })
+
+                    if (kriteria === 'permukaan_perkerasan') permukaan_perkerasan_row_content += `</tr>`
+                    if (kriteria === 'retak_retak') retak_retak_row_content += `</tr>`
+                    if (kriteria === 'kerusakan_lain') kerusakan_lain_row_content += `</tr>`
+                    if (kriteria === 'insfrastruktur_lain') infrastruktur_lain_row_content += `</tr>`
+
+                })
+            }
+        })
+        document.getElementById("permukaan_perkerasan_tbody").innerHTML = permukaan_perkerasan_row_content;
+        document.getElementById("retak_retak_tbody").innerHTML = retak_retak_row_content;
+        document.getElementById("kerusakan_lain_tbody").innerHTML = kerusakan_lain_row_content;
+        document.getElementById("infrastruktur_lain_tbody").innerHTML = infrastruktur_lain_row_content;
+    }
+
+    function information_modal_trigger() {
+
+        // ** INITIAL  VALUE FOR OPTION LIST
+        const select_value_list = {
+            susunan: [{ name: "Baik/Rapat", value: 0 }, { name: "Kasar", value: 1 }],
+            kondisi_keadaan: [{ name: "Baik/Tidak ada kelainan", value: 0 }, { name: "Aspal berlebihan", value: 0.33 }, { name: "Lepas", value: 0.66 }, { name: "Hancur", value: 1 }],
+            penurunan: [{ name: "Tidak ada", value: 0 }, { name: " < 10 %", value: 0.33 }, { name: "10 - 30 %", value: 0.66 }, { name: " > 30 %", value: 1 }],
+            tambalan: [{ name: "Tidak ada", value: 0 }, { name: " < 10 %", value: 0.33 }, { name: "10 - 30 %", value: 0.66 }, { name: " > 30 %", value: 1 }],
+            jenis: [{ name: "Tidak Ada", value: 0 }, { name: "Tidak Berhubungan", value: 0.33 }, { name: "Saling Berhubungan (Berbidang Luas)", value: 0.66 }, { name: "Saling Berhubungan (Berbidang Sempit)", value: 1 }],
+            lebar: [{ name: "Tidak Ada", value: 0 }, { name: "Halus < 1 mm", value: 0.33 }, { name: "Sedang 1 - 5 mm", value: 0.66 }, { name: "Lebar > 5 mm", value: 1 }],
+            persen_luas: [{ name: "Tidak Ada", value: 0 }, { name: "< 10% Luas", value: 0.33 }, { name: "10 - 30% Luas", value: 0.66 }, { name: "> 30% Luas", value: 1 }],
+            jumlah_lubang: [{ name: "Tidak Ada", value: 0 }, { name: "1/100 M", value: 0.33 }, { name: "2-5/100 M", value: 0.66 }, { name: "> 5/100 M", value: 1 }],
+            ukuran_lubang: [{ name: "Tidak Ada", value: 0 }, { name: "Kecil-Dangkal", value: 0.33 }, { name: "Kecil-Dalam", value: 0.5 }, { name: "Besar-Dangkal", value: 0.75 }, { name: "Besar-Dalam", value: 1 }],
+            bekas_roda: [{ name: "Tidak Ada", value: 0 }, { name: "< 1 cm", value: 0.25 }, { name: "1 - 3 cm", value: 0.5 }, { name: "3 cm", value: 1 }],
+            kerusakan_tepi: [{ name: "Tidak Ada", value: 0 }, { name: "Ringan", value: 0.5 }, { name: "Berat", value: 1 }],
+            kondisi_bahu: [{ name: "Tidak Ada", value: 0 }, { name: "Baik/Rata", value: 0.33 }, { name: "Erosi Ringan", value: 0.66 }, { name: "Erosi Barat", value: 1 }],
+            permukaan_bahu: [{ name: "Tidak Ada", value: 0 }, { name: "Diatas Permukaan Jalan", value: 0.25 }, { name: "Rata dengan permukaan jalan", value: 0.5 }, { name: "Dibawah permukaan jalan", value: 0.75 }, { name: "10 cm dibawah permukaan jalan", value: 1 }],
+            kondisi_saluran_samping: [{ name: "Tidak Ada", value: 0 }, { name: "Bersih", value: 0.25 }, { name: "Tertutup/Tersumbat", value: 0.5 }, { name: "Erosi", value: 1 }],
+            kerusakan_lereng: [{ name: "Tidak Ada", value: 0 }, { name: "Longsor / Runtuh", value: 1 }],
+            trotoar: [{ name: "Tidak Ada", value: 0 }, { name: "Baik/Aman", value: 0.5 }, { name: "Berbahaya", value: 1 }]
+        }
+
+        const modal_body_dom = document.getElementById("modal_body");
+
+        // ** create the dom select input and name it
+        let modal_content = "<label>Nama Jalan</label><input class='form form-control' placeholder='input nama jalan' id='input_nama_jalan' />";
+
+        Object.keys(body).forEach(kriteria => {
+            Object.keys(body[kriteria]).forEach(subKriteria => {
+                if (body[kriteria][subKriteria] == true) {
+                    modal_content += `<label> ${formatString(subKriteria)}</ >
+                    <select id="input_${subKriteria}" class="form form-control">`;
+
+                    select_value_list[subKriteria].forEach(select_value => {
+                        modal_content += `<option value="${select_value.value}">${select_value.name}</option>`
+                    })
+                    modal_content += `</select>`
+                }
+            })
+        })
+
+        modal_body_dom.innerHTML = modal_content
+    }
+
+    function add_data() {
+
+        let input_jalan = document.getElementById("input_nama_jalan").value
+
+        if (!input_jalan) {
+            alert("Input Jalan Tidak Boleh Kosong")
+            return;
+        }
+
+        street_list.push(input_jalan)
+        const dataNumber = street_list.length - 1
+
+        // collect input data
+        Object.keys(body).forEach((kriteria) => {
+            let property = {}
+            Object.keys(body[kriteria]).forEach((subKriteria) => {
+                const input_dom = document.getElementById(`input_${subKriteria}`)
+
+                if (!input_dom) {
+                } else {
+                    input_value = input_dom.value
+                    property[`${subKriteria}_${dataNumber}`] = input_value
+                }
+            })
+            post_data[kriteria].push(property)
+        })
+
+        sessionStorage.setItem("temp_post_data", JSON.stringify(post_data))
+
+        render_row_table()
+    }
+
+    function process_fuzzy() {
+
+        if (street_list.length < 2) {
+            alert("Data Tidak Valid! Mohon Input Minimal 2 Data Jalan");
+            return;
+        }
+
+        fetch('/input_fuzzy', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(post_data)  // Stringify postData before sending
+        }).then(response => response.json())
+            .then(data => {
+                console.log(data)
+                buildModal(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+</script>

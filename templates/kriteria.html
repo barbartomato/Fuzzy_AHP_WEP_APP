@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centered Card Form</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .card-centered {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            background-color: #343a40;
+            padding-top: 1rem;
+        }
+
+        .sidebar .nav-link {
+            color: #ffffff;
+        }
+
+        .sidebar .nav-link.active {
+            background-color: #007bff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-2 d-none d-md-block sidebar">
+                <div class="sidebar-sticky">
+                    <ul class="nav flex-column">
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Beranda</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/kriteria">Pilih Kriteria</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/process">Proses AHP</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+                <div
+                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Dashboard Fuzzy AHP</h1>
+                </div>
+
+                <h1 style="text-align: center; margin-top: 30px;">Pilih Kriteria Jalan</h1>
+
+                <div class="container">
+                    <div class="row card-centered">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    Pilih Data
+                                </div>
+                                <div class="card-body">
+
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Kriteria</th>
+                                                <th scope="col">Sub Kriteria</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- PERMUKAAN PERKERASAAN -->
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check mx-1">
+                                                        <input id="permukaan_perkerasan" class="form-check-input"
+                                                            type="checkbox" value="" id="flexCheckDefault1">
+                                                        <p class="form-check-p" for="flexCheckDefault1">
+                                                            Permukaan
+                                                        </p>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex flex-row">
+                                                        <div class="form-check">
+                                                            <input id="susunan" class="form-check-input" type="checkbox"
+                                                                value="" id="flexCheckDefault2">
+                                                            <p class="form-check-p" for="flexCheckDefault2">
+                                                                Susunan
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="form-check mx-1">
+                                                            <input id="kondisi_keadaan" class="form-check-input"
+                                                                type="checkbox" value="" id="flexCheckDefault2">
+                                                            <p class="form-check-p" for="flexCheckDefault2">
+                                                                Kondisi Keadaan
+                                                            </p>
+                                                        </div>
+                                                        <div class="form-check mx-1">
+                                                            <input id="penurunan" class="form-check-input"
+                                                                type="checkbox" value="" id="flexCheckDefault2">
+                                                            <p class="form-check-p" for="flexCheckDefault2">
+                                                                Penurunan
+                                                            </p>
+                                                        </div>
+                                                        <div class="form-check mx-1">
+                                                            <input id="tambalan" class="form-check-input"
+                                                                type="checkbox" value="" id="flexCheckDefault2">
+                                                            <p class="form-check-p" for="flexCheckDefault2">
+                                                                Tambalan
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                </td>
+                                            </tr>
+
+                                            <!-- RETAK RETAK-->
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check mx-1">
+                                                        <input id="retak_retak" class="form-check-input" type="checkbox"
+                                                            value="" id="flexCheckDefault1">
+                                                        <p class="form-check-p" for="flexCheckDefault1">
+                                                            Retak-Retak
+                                                        </p>
+                                                    </div>
+                                                </td>
+
+                                                <td>
+                                                    <div class="d-flex flex-row">
+
+
+                                                        <div class="form-check ">
+                                                            <input id="jenis" class="form-check-input" type="checkbox"
+                                                                value="" id="flexCheckDefault2">
+                                                            <p class="form-check-p" for="flexCheckDefault2">
+                                                                Jenis
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="form-check mx-1">
+                                                            <input id="lebar" class="form-check-input" type="checkbox"
+                                                                value="" id="flexCheckDefault2">
+                                                            <p class="form-check-p" for="flexCheckDefault2">
+                                                                Lebar
+                                                            </p>
+                                                        </div>
+                                                        <div class="form-check mx-1">
+                                                            <input id="persen_luas" class="form-check-input"
+                                                                type="checkbox" value="" id="flexCheckDefault2">
+                                                            <p class="form-check-p" for="flexCheckDefault2">
+                                                                Persen Luas
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                </td>
+                                            </tr>
+
+                                            <!-- Kerusakan Lain-->
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check mx-1">
+                                                        <input id="kerusakan_lain" class="form-check-input"
+                                                            type="checkbox" value="" id="flexCheckDefault1">
+                                                        <p class="form-check-p" for="flexCheckDefault1">
+                                                            Kerusakan Lain
+                                                        </p>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex flex-row">
+                                                        <div class="form-check ">
+                                                            <input id="jumlah_lubang" class="form-check-input"
+                                                                type="checkbox" value="" id="flexCheckDefault2">
+                                                            <p class="form-check-p" for="flexCheckDefault2">
+                                                                Jumlah Lubang
+                                                            </p>
+                                                        </div>
+                                                        <div class="form-check mx-1">
+                                                            <input id="ukuran_lubang" class="form-check-input"
+                                                                type="checkbox" value="" id="flexCheckDefault2">
+                                                            <p class="form-check-p" for="flexCheckDefault2">
+                                                                Ukuran Lubang
+                                                            </p>
+                                                        </div>
+                                                        <div class="form-check mx-1">
+                                                            <input id="bekas_roda" class="form-check-input"
+                                                                type="checkbox" value="" id="flexCheckDefault2">
+                                                            <p class="form-check-p" for="flexCheckDefault2">
+                                                                Bekas Roda
+                                                            </p>
+                                                        </div>
+                                                        <div class="form-check mx-1">
+                                                            <input id="kerusakan_tepi" class="form-check-input"
+                                                                type="checkbox" value="" id="flexCheckDefault2">
+                                                            <p class="form-check-p" for="flexCheckDefault2">
+                                                                Kerusakan Tepi
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+
+                                                </td>
+
+                                            </tr>
+
+                                            <!-- Infrastruktur Lain-->
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check mx-1">
+                                                        <input id="infrastruktur_lain" class="form-check-input"
+                                                            type="checkbox" value="" id="flexCheckDefault1">
+                                                        <p class="form-check-p" for="flexCheckDefault1">
+                                                            Infrastruktur Lain
+                                                        </p>
+                                                    </div>
+                                                </td>
+                                                <td>
+
+                                                    <div class="d-flex flex-row">
+                                                        <div class="form-check ">
+                                                            <input id="kondisi_bahu" class="form-check-input"
+                                                                type="checkbox" value="" id="flexCheckDefault2">
+                                                            <p class="form-check-p" for="flexCheckDefault2">
+                                                                Kondisi Bahu
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="form-check mx-1">
+                                                            <input id="permukaan_bahu" class="form-check-input"
+                                                                type="checkbox" value="" id="flexCheckDefault2">
+                                                            <p class="form-check-p" for="flexCheckDefault2">
+                                                                Permukaan Bahu
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="form-check mx-1">
+                                                            <input id="kondisi_saluran_samping" class="form-check-input"
+                                                                type="checkbox" value="" id="flexCheckDefault2">
+                                                            <p class="form-check-p" for="flexCheckDefault2">
+                                                                Kondisi Saluran Samping
+                                                            </p>
+                                                        </div>
+                                                        <div class="form-check mx-1">
+                                                            <input id="kerusakan_lereng" class="form-check-input"
+                                                                type="checkbox" value="" id="flexCheckDefault2">
+                                                            <p class="form-check-p" for="flexCheckDefault2">
+                                                                Kerusakan Lereng
+                                                            </p>
+                                                        </div>
+                                                        <div class="form-check mx-1">
+                                                            <input id="trotoar" class="form-check-input" type="checkbox"
+                                                                value="" id="flexCheckDefault2">
+                                                            <p class="form-check-p" for="flexCheckDefault2">
+                                                                Trotoar
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                </td>
+                                            </tr>
+
+                                        </tbody>
+                                        <tbody>
+
+                                    </table>
+
+                                </div>
+                                <button onclick="process_request()" class="btn btn-primary m-4">Selanjutnya</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+
+<script>
+
+    const data_allowed = {
+        permukaan_perkerasan: [
+            "susunan", "kondisi_keadaan", "penurunan", "tambalan"
+        ],
+        retak_retak: [
+            "jenis", "lebar", "persen_luas"
+        ],
+        kerusakan_lain: [
+            "jumlah_lubang", "ukuran_lubang", "bekas_roda", "kerusakan_tepi"
+        ],
+        infrastruktur_lain: [
+            "kondisi_bahu", "kondisi_saluran_samping", "kerusakan_lereng", "trotoar"
+        ]
+    }
+
+    // calling all element from html docs
+    // ** KRITERIA **
+    const permukaan_perkerasan = document.getElementById("permukaan_perkerasan")
+    const retak_retak = document.getElementById("retak_retak")
+    const kerusakan_lain = document.getElementById("kerusakan_lain")
+    const infrastruktur_lain = document.getElementById("infrastruktur_lain")
+
+    // ** SUB KRITERIA
+    const susunan = document.getElementById("susunan")
+    const kondisi_keadaan = document.getElementById("kondisi_keadaan")
+    const penurunan = document.getElementById("penurunan")
+    const tambalan = document.getElementById("tambalan")
+
+    const jenis = document.getElementById("jenis")
+    const lebar = document.getElementById("lebar")
+    const persen_luas = document.getElementById("persen_luas")
+
+    const jumlah_lubang = document.getElementById("jumlah_lubang")
+    const ukuran_lubang = document.getElementById("ukuran_lubang")
+    const bekas_roda = document.getElementById("bekas_roda")
+    const kerusakan_tepi = document.getElementById("kerusakan_tepi")
+
+    const kondisi_bahu = document.getElementById("kondisi_bahu")
+    const permukaan_bahu = document.getElementById("permukaan_bahu")
+    const kondisi_saluran_samping = document.getElementById("kondisi_saluran_samping")
+    const kerusakan_lereng = document.getElementById("kerusakan_lereng")
+    const trotoar = document.getElementById("trotoar")
+
+
+    function process_request() {
+        // **VALIDATE THE INPUT ( FOR SUBKRITERIA)**\
+        if (permukaan_perkerasan.checked) {
+            if (!susunan.checked && !kondisi_keadaan.checked && !penurunan.checked && !tambalan.checked) {
+                alert("INPUT TIDAK VALID! Silahkan memilih subkriteria dari pernukaan perkerasaan");
+                return;
+            }
+        }
+        if (retak_retak.checked) {
+            if (!jenis.checked && !lebar.checked && !persen_luas.checked) {
+                alert("INPUT TIDAK VALID! Silahkan memilih subkriteria dari retak retak");
+                return;
+            }
+        }
+        if (kerusakan_lain.checked) {
+            if (!jumlah_lubang.checked && !ukuran_lubang.checked && !bekas_roda.checked && !kerusakan_tepi.checked) {
+                alert("INPUT TIDAK VALID! Silahkan memilih kriteria dari Subkriteria yang dipilih");
+                return;
+            }
+        }
+        if (infrastruktur_lain.checked) {
+            if (!kondisi_bahu.checked && !permukaan_bahu.checked && !kondisi_saluran_samping.checked && !kerusakan_lereng.checked && !trotoar.checked) {
+                alert("INPUT TIDAK VALID!  Silahkan memilih kriteria dari Subkriteria yang dipilih");
+                return;
+            }
+        }
+
+        // ** VALIDATE THE INPUT (FOR KRITERIA) **\
+        if (susunan.checked || kondisi_keadaan.checked || penurunan.checked || tambalan.checked) {
+            if (!permukaan_perkerasan.checked) {
+                alert("INPUT TIDAK VALID! S Silahkan memilih kriteria dari Subkriteria yang dipilih");
+                return;
+            }
+        }
+        if (jenis.checked || lebar.checked || persen_luas.checked) {
+            if (!retak_retak.checked) {
+                alert("INPUT TIDAK VALID!  Silahkan memilih kriteria dari Subkriteria yang dipilih");
+                return;
+            }
+        }
+        if (jumlah_lubang.checked || ukuran_lubang.checked || bekas_roda.checked || kerusakan_tepi.checked) {
+            if (!kerusakan_lain.checked) {
+                alert("INPUT TIDAK VALID!  Silahkan memilih kriteria dari Subkriteria yang dipilih");
+                return;
+            }
+        }
+        if (kondisi_bahu.checked || permukaan_bahu.checked || kondisi_saluran_samping.checked || kerusakan_lereng.checked || trotoar.checked) {
+            if (!infrastruktur_lain.checked) {
+                alert("INPUT TIDAK VALID! Silahkan memilih kriteria dari Subkriteria yang dipilih");
+                return;
+            }
+        }
+
+
+        const body = {
+            ...(permukaan_perkerasan.checked ? {
+                'permukaan_perkerasan': {
+                    'susunan': susunan.checked,
+                    'kondisi_keadaan': kondisi_keadaan.checked,
+                    'penurunan': penurunan.checked,
+                    'tambalan': tambalan.checked
+                }
+            } : {}),
+
+            ...(retak_retak.checked ? {
+                'retak_retak': {
+                    'jenis': jenis.checked,
+                    'lebar': lebar.checked,
+                    'persen_luas': persen_luas.checked
+                }
+            } : {}),
+
+            ...(kerusakan_lain.checked ? {
+                'kerusakan_lain': {
+                    'jumlah_lubang': jumlah_lubang.checked,
+                    'ukuran_lubang': ukuran_lubang.checked,
+                    'bekas_roda': bekas_roda.checked,
+                    'kerusakan_tepi': kerusakan_tepi.checked
+                }
+            } : {}),
+
+            ...(infrastruktur_lain.checked ? {
+                'insfrastruktur_lain': {
+                    'kondisi_bahu': kondisi_bahu.checked,
+                    'permukaan_bahu': permukaan_bahu.checked,
+                    'kondisi_saluran_samping': kondisi_saluran_samping.checked,
+                    'kerusakan_lereng': kerusakan_lereng.checked,
+                    'trotoar': trotoar.checked
+                }
+            } : {})
+        };
+
+        sessionStorage.setItem('body', JSON.stringify(body))
+
+        window.location.href = '/process'
+
+    }
+
+</script>
+
+</html>
