@@ -1,0 +1,61 @@
+<h1 style="text-align: center; margin-block: 40px;">Proses Fuzzy AHP</h1>
+
+<!-- Button trigger modal-->
+<div class="w-100 d-flex">
+    <button onclick="window.location.href = '/';" class="btn btn-danger mx-4 mb-4">
+        Kembali
+    </button>
+    <button onclick="information_modal_trigger()" type="button" class="btn btn-success mx-4 mb-4 ml-auto"
+        data-toggle="modal" data-target="#exampleModal">
+        Tambah Data Jalan+
+    </button>
+</div>
+
+<!-- MODAL FOR RESULT OF THE PROCESS AHP-->
+
+
+<!-- Modal  For Input Jalan Data-->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Tambah Data Jalan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modal_body">
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Kembali</button>
+                <button type="button" class="btn btn-success" onclick="add_data()">Tambah</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3 style="display: none;" class="mx-4" id="permukaan_perkerasan_title">Kriteria Permukaan Perkerasan</h3>
+<div class="mx-4" id="permukaan_perkerasan">
+
+</div>
+
+<h3 style="display: none;" class="mx-4" id="retak_retak_title">Kriteria Retak Retak</h3>
+<div class="mx-4" id="retak_retak">
+
+</div>
+
+<h3 style="display: none;" class="mx-4" id="kerusakan_lain_title">Kriteria Permukaan Keruskan Lain</h3>
+<div class="mx-4" id="kerusakan_lain">
+
+</div>
+
+<h3 style="display: none;" class="mx-4" id="insfrastruktur_lain_title">Kriteria Infrastruktur Lain</h3>
+<div class="mx-4" id="infrastruktur_lain">
+
+</div>
+
+<button onclick="process_fuzzy()" class="btn btn-success mx-4">Proses Data
+    Jalan</button>
