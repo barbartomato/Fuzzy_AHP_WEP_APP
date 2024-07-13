@@ -5,7 +5,7 @@ python -m venv venv
 ```
 Go to Root Dircetory and activate the virtual environment using the script below:
 ```bash
-source venv/Scripts/activate
+venv/Scripts/Activate
 ```
 Install the requirement package
 ```bash
