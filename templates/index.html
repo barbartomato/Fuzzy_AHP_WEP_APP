@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Centered Card Form</title>
+    <title>Fuzzy AHP</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .card-centered {
@@ -46,10 +46,13 @@
                             <a class="nav-link active" href="/">Beranda</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/kriteria">Pilih Kriteria</a>
+                            <a class="nav-link" href="/kriteria">Kriteria dan Subkriteria</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/process">Proses AHP</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/result_history">Hasil Proses AHP</a>
                         </li>
                     </ul>
                 </div>
@@ -58,15 +61,29 @@
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
                 <div
                     class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">Dashboard Fuzzy AHP</h1>
+                    <h1 class="h2">Sistem Prioritas Penanganan Kerusakan Jalan</h1>
                 </div>
 
-                <h1 style="text-align: center; margin-top: 30px;">Hello World</h1>
-
+                <h1 style="text-align: center; margin-top: 30px;">Petunjuk Penggunaan</h1>
+                <div class="content" style="margin-top: 40px;">
+                    <ol>
+                        <li>Masuk ke halaman Kriteria dan Subkriteria.</li>
+                        <li>Pilih Kriteria dan Subkriteria pada kotak centang yang telah disediakan sesuai dengan kebutuhan Anda. Anda tidak dapat mengosongkan kotak Subkriteria kecuali pada Kriteria yang memang tidak memiliki Subkriteria. Anda juga tidak dapat memilih Subkriteria jika belum memilih Kriteria.</li>
+                        <li>Setelah selesai pada langkah no.2, tekan tombol "Selanjutnya".</li>
+                        <li>Anda akan masuk ke halaman Proses AHP.</li>
+                        <li>Tekan tombol "Tambah Data Jalan" untuk memasukkan nama ruas jalan. Isi nama jalan dan pilih nilai yang sesuai dengan Subkriteria, lalu tekan tombol "Tambah". Anda tidak dapat memproses data jika hanya terdiri dari satu data. Sebaliknya, Anda dapat menambahkan data sebanyak yang diperlukan.</li>
+                        <li>Data yang Anda tambahkan akan ditampilkan.</li>
+                        <li>Jika ingin menghapus data, tekan tombol "Delete".</li>
+                        <li>Kemudian, tekan tombol "Proses Data Jalan" untuk melihat hasil.</li>
+                        <li>Ruas jalan yang mempunyai skor tertinggi adalah ruas jalan yang prioritas.</li>
+                        <li>Anda dapat melihat detail data dari hasil perhitungan pada halaman Hasil Proses AHP.</li>
+                    </ol>
+                </div>
                 <!-- ISI CONTENT DATA DISINI -->
 
 
             </main>
+            
         </div>
     </div>
 
@@ -74,6 +91,37 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        const select_value_list = {
+            susunan: [{ name: "Baik/Rapat", value: 0 }, { name: "Kasar", value: 1 }],
+            kondisi_keadaan: [{ name: "Baik/Tidak ada kelainan", value: 0 }, { name: "Aspal berlebihan", value: 0.33 }, { name: "Lepas", value: 0.66 }, { name: "Hancur", value: 1 }],
+            penurunan: [{ name: "Tidak ada", value: 0 }, { name: " < 10 %", value: 0.33 }, { name: "10 - 30 %", value: 0.66 }, { name: " > 30 %", value: 1 }],
+            tambalan: [{ name: "Tidak ada", value: 0 }, { name: " < 10 %", value: 0.33 }, { name: "10 - 30 %", value: 0.66 }, { name: " > 30 %", value: 1 }],
+            jenis: [{ name: "Tidak Ada", value: 0 }, { name: "Tidak Berhubungan", value: 0.33 }, { name: "Saling Berhubungan (Berbidang Luas)", value: 0.66 }, { name: "Saling Berhubungan (Berbidang Sempit)", value: 1 }],
+            lebar: [{ name: "Tidak Ada", value: 0 }, { name: "Halus < 1 mm", value: 0.33 }, { name: "Sedang 1 - 5 mm", value: 0.66 }, { name: "Lebar > 5 mm", value: 1 }],
+            persen_luas: [{ name: "Tidak Ada", value: 0 }, { name: "< 10% Luas", value: 0.33 }, { name: "10 - 30% Luas", value: 0.66 }, { name: "> 30% Luas", value: 1 }],
+            jumlah_lubang: [{ name: "Tidak Ada", value: 0 }, { name: "1/100 M", value: 0.33 }, { name: "2-5/100 M", value: 0.66 }, { name: "> 5/100 M", value: 1 }],
+            ukuran_lubang: [{ name: "Tidak Ada", value: 0 }, { name: "Kecil-Dangkal", value: 0.33 }, { name: "Kecil-Dalam", value: 0.5 }, { name: "Besar-Dangkal", value: 0.75 }, { name: "Besar-Dalam", value: 1 }],
+            bekas_roda: [{ name: "Tidak Ada", value: 0 }, { name: "< 1 cm", value: 0.25 }, { name: "1 - 3 cm", value: 0.5 }, { name: "3 cm", value: 1 }],
+            kerusakan_tepi: [{ name: "Tidak Ada", value: 0 }, { name: "Ringan", value: 0.5 }, { name: "Berat", value: 1 }],
+            kondisi_bahu: [{ name: "Tidak Ada", value: 0 }, { name: "Baik/Rata", value: 0.33 }, { name: "Erosi Ringan", value: 0.66 }, { name: "Erosi Barat", value: 1 }],
+            permukaan_bahu: [{ name: "Tidak Ada", value: 0 }, { name: "Diatas Permukaan Jalan", value: 0.25 }, { name: "Rata dengan permukaan jalan", value: 0.5 }, { name: "Dibawah permukaan jalan", value: 0.75 }, { name: "10 cm dibawah permukaan jalan", value: 1 }],
+            kondisi_saluran_samping: [{ name: "Tidak Ada", value: 0 }, { name: "Bersih", value: 0.25 }, { name: "Tertutup/Tersumbat", value: 0.5 }, { name: "Erosi", value: 1 }],
+            kerusakan_lereng: [{ name: "Tidak Ada", value: 0 }, { name: "Longsor / Runtuh", value: 1 }],
+            trotoar: [{ name: "Tidak Ada", value: 0 }, { name: "Baik/Aman", value: 0.5 }, { name: "Berbahaya", value: 1 }],
+            anggaran: [{ name: ">= 200 Juta", value: 0 }, { name: "< 200 Juta", value: 1 }],
+            volume_kendaraan: [{ name: "Sepi", value: 0 }, { name: "Sedang", value: 0.5 }, { name: "Ramai", value: 1 }]
+        }
+        localStorage.setItem('labels', JSON.stringify(select_value_list))
+    
+    
+    const isValidSession = sessionStorage.getItem("credentials");
+    if(!isValidSession){
+        window.location.href = "/login"
+    }
+    
+    </script>
 
 </body>
 

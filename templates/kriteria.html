@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Centered Card Form</title>
+    <title>Fuzzy AHP</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .card-centered {
@@ -41,15 +41,17 @@
             <nav class="col-md-2 d-none d-md-block sidebar">
                 <div class="sidebar-sticky">
                     <ul class="nav flex-column">
-
                         <li class="nav-item">
                             <a class="nav-link" href="/">Beranda</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="/kriteria">Pilih Kriteria</a>
+                            <a class="nav-link active" href="/kriteria">Kriteria dan Subkriteria</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/process">Proses AHP</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/result_history">Hasil Proses AHP</a>
                         </li>
                     </ul>
                 </div>
@@ -58,10 +60,134 @@
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
                 <div
                     class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">Dashboard Fuzzy AHP</h1>
+                    <h1 class="h2">Sistem Prioritas Penanganan Kerusakan Jalan</h1>
                 </div>
 
-                <h1 style="text-align: center; margin-top: 30px;">Pilih Kriteria Jalan</h1>
+                <h1 style="text-align: center; margin-top: 30px;">Pilih Kriteria dan Subkriteria</h1>
+
+                <div style="display: flex;" class="container">
+                    <div>
+                        <label style="width:120px;">Pilih Preset</label>
+                        <select style="width: 70px;" id="preset-list" class="form-control">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                        </select>
+                    </div>
+                    <div class="card p-2 rounded shadow" id="preset_information">
+                    </div>
+
+                </div>
+                <div class="container my-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Permukaan Perkerasan</h4>
+                        </div>
+                        <div class="card-body">
+                            <p>Permukaan Perkerasan adalah lapisan struktur jalan yang terletak pada bagian atas yang
+                                secara langsung bersentuhan dengan ban kendaraan. Berdasarkan lapisannya yang terletak
+                                di bagian atas, Kriteria ini mempunyai 4 subkriteria, di antaranya :</p>
+                            <ul>
+                                <li><strong>Susunan</strong>, yang merupakan lapisan material yang membentuk struktur
+                                    perkerasan jalan</li>
+                                <li><strong>Kondisi</strong>, merupakan keadaan atau status struktur perkerasan jalan
+                                    yang diukur dengan melihat tingkat keausan dari struktur jalan.</li>
+                                <li><strong>Penurunan</strong>, kondisi dimana terjadinya perubahan elevasi atau
+                                    ketinggian permukaan jalan dari posisi aslinya</li>
+                                <li><strong>Tambalan</strong>, merupakan penambahan material pada permukaan perkerasan
+                                    yang dilakukan untuk mencegah ukuran kerusakan permukaan jalan menjadi semakin
+                                    besar, dalam artian melakukan perbaikan jalan secara sementara.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h4>Retak-Retak</h4>
+                        </div>
+                        <div class="card-body">
+                            <p>Retak -Retak merupakan kriteria yang ditandai dengan adanya pecahan yang menimbulkan
+                                adanya celah pada permukaan jalan. Kriteria Retak-Retak mempunyai 3 subkriteria yang
+                                terdiri dari :</p>
+                            <ul>
+                                <li><strong>Jenis</strong>, merupakan variasi retakan yang muncul dan dapat dilihat dari
+                                    pola atau bentuk dari persebaran retakan</li>
+                                <li><strong>Lebar</strong>, merupakan dimensi horizontal yang ukurannya ditentukan oleh
+                                    jenis serta faktor penyebab kerusakan</li>
+                                <li><strong>Persen luas</strong>, merupakan ukuran yang digunakan untuk menggambarkan
+                                    seberapa besar retakan yang terjadi pada permukaan jalan.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h4>Kerusakan Lain</h4>
+                        </div>
+                        <div class="card-body">
+                            <p>Kerusakan Lain adalah kriteria yang mencakup permasalahan kecacatan jalan selain
+                                keretakan. Kriteria Kerusakan Lain mempunyai 4 subkriteria, yaitu :</p>
+                            <ul>
+                                <li><strong>Jumlah Lubang</strong>, merupakan indikator yang digunakan dalam mengukur
+                                    tingkat kerusakan jalan, sehingga dapat dilakukan perawatan maupun perbaikan.</li>
+                                <li><strong>Ukuran Lubang</strong>, merupakan indikator yang digunakan untuk melihat
+                                    dimensi dari lubang yang terdapat pada permukaan jalan.</li>
+                                <li><strong>Bekas Roda</strong>, merupakan jejak atau tanda dari roda kendaraan yang
+                                    melintas di permukaan jalan</li>
+                                <li><strong>Kerusakan Tepi</strong>, merupakan kerusakan yang terjadi pada area tepi
+                                    atau pinggir jalan</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h4>Infrastruktur Lain</h4>
+                        </div>
+                        <div class="card-body">
+                            <p>Infrastruktur Lain merupakan fasilitas lain yang mendukung segala aktivitas masyarakat di
+                                bidang jalan, yang meliputi bahu jalan, saluran samping, lereng, maupun trotoar.
+                                Kriteria ini mempunyai 5 subkriteria, diantaranya :</p>
+                            <ul>
+                                <li><strong>Kondisi Bahu</strong>, merupakan keadaan fisik dari bahu jalan yang biasanya
+                                    digunakan oleh pejalan kaki untuk melintas maupun memarkirkan kendaraan.</li>
+                                <li><strong>Permukaan Bahu</strong>, merupakan posisi atau letak dari bahu jalan
+                                    terhadap jalan utama</li>
+                                <li><strong>Kondisi Saluran Samping</strong>, merupakan keadaan dari saluran yang
+                                    terletak di sisi jalan atau yang disebut dengan parit</li>
+                                <li><strong>Kerusakan Lereng</strong>, merupakan suatu kondisi dimana terjadinya
+                                    perubahan bentuk pada lereng dan mengganggu fungsi infrastruktur jalan.</li>
+                                <li><strong>Trotoar</strong>, merupakan fasilitas umum yang disediakan untuk masyarakat
+                                    sebagai jalur aman yang terletak di sisi samping jalan.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h4>Anggaran</h4>
+                        </div>
+                        <div class="card-body">
+                            <p>Anggaran adalah pendapatan dan pengeluaran yang direncanakan secara rinci untuk
+                                mengestimasi berapa banyak pemakaian keuangan dari keuangan yang tersedia.</p>
+                        </div>
+                    </div>
+
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h4>Volume Kendaraan</h4>
+                        </div>
+                        <div class="card-body">
+                            <p>Volume Kendaraan adalah banyaknya kendaraan yang melintasi suatu titik atau garis dalam
+                                suatu periode tertentu.</p>
+                        </div>
+                    </div>
+                </div>
+
+
 
                 <div class="container">
                     <div class="row card-centered">
@@ -274,6 +400,32 @@
                                                 </td>
                                             </tr>
 
+                                            <!-- ANGGARAN -->
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check mx-1">
+                                                        <input id="anggaran" class="form-check-input" type="checkbox"
+                                                            value="" id="flexCheckDefault1">
+                                                        <p class="form-check-p" for="flexCheckDefault1">
+                                                            Anggaran
+                                                        </p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <!-- VOLUME KENDARAAN -->
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check mx-1">
+                                                        <input id="volume_kendaraan" class="form-check-input"
+                                                            type="checkbox" value="" id="flexCheckDefault1">
+                                                        <p class="form-check-p" for="flexCheckDefault1">
+                                                            Volume Kendaraan
+                                                        </p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
                                         </tbody>
                                         <tbody>
 
@@ -298,6 +450,12 @@
 
 <script>
 
+    const isValidSession = sessionStorage.getItem("credentials");
+    if(!isValidSession){
+        window.location.href = "/login"
+    }
+        
+
     const data_allowed = {
         permukaan_perkerasan: [
             "susunan", "kondisi_keadaan", "penurunan", "tambalan"
@@ -319,6 +477,8 @@
     const retak_retak = document.getElementById("retak_retak")
     const kerusakan_lain = document.getElementById("kerusakan_lain")
     const infrastruktur_lain = document.getElementById("infrastruktur_lain")
+    const anggaran = document.getElementById("anggaran")
+    const volume_kendaraan = document.getElementById("volume_kendaraan")
 
     // ** SUB KRITERIA
     const susunan = document.getElementById("susunan")
@@ -343,7 +503,7 @@
 
 
     function process_request() {
-        // **VALIDATE THE INPUT ( FOR SUBKRITERIA)**\
+        // **VALIDATE THE INPUT (FOR SUBKRITERIA)**\
         if (permukaan_perkerasan.checked) {
             if (!susunan.checked && !kondisi_keadaan.checked && !penurunan.checked && !tambalan.checked) {
                 alert("INPUT TIDAK VALID! Silahkan memilih subkriteria dari pernukaan perkerasaan");
@@ -424,21 +584,131 @@
             } : {}),
 
             ...(infrastruktur_lain.checked ? {
-                'insfrastruktur_lain': {
+                'infrastruktur_lain': {
                     'kondisi_bahu': kondisi_bahu.checked,
                     'permukaan_bahu': permukaan_bahu.checked,
                     'kondisi_saluran_samping': kondisi_saluran_samping.checked,
                     'kerusakan_lereng': kerusakan_lereng.checked,
                     'trotoar': trotoar.checked
                 }
+            } : {}),
+
+            ...(anggaran.checked ? {
+                'anggaran': {
+                    "anggaran": true
+                }
+            } : {}),
+
+            ...(volume_kendaraan.checked ? {
+                'volume_kendaraan': {
+                    "volume_kendaraan": true
+                }
             } : {})
         };
 
         sessionStorage.setItem('body', JSON.stringify(body))
 
+        localStorage.setItem('preset', document.getElementById('preset-list').value);
+
         window.location.href = '/process'
 
     }
+
+
+    // ! HARDCODE DATA FOR PRESET
+    const presetList = [
+        {
+            1: [
+                'Anggaran',
+                'Permukaan Perkerasan',
+                'Volume Kendaraan',
+                'Kerusakan Lain',
+                'Infrastruktur Lain',
+                'Retak Retak'
+            ]
+        },
+        {
+            2: [
+                'Permukaan Perkerasan',
+                'Volume Kendaraan',
+                'Kerusakan Lain',
+                'Infrastruktur Lain',
+                'Retak Retak',
+                'Anggaran'
+            ]
+        },
+        {
+            3: [
+                'Volume Kendaraan',
+                'Kerusakan Lain',
+                'Infrastruktur Lain',
+                'Retak Retak',
+                'Anggaran',
+                'Permukaan Perkerasan'
+            ]
+        },
+        {
+            4: [
+                'Kerusakan Lain',
+                'Infrastruktur Lain',
+                'Retak Retak',
+                'Anggaran',
+                'Permukaan Perkerasan',
+                'Volume Kendaraan'
+            ]
+        },
+        {
+            5: [
+                'Infrastruktur Lain',
+                'Retak Retak',
+                'Anggaran',
+                'Permukaan Perkerasan',
+                'Volume Kendaraan',
+                'Kerusakan Lain'
+            ]
+        },
+        {
+            6: [
+                'Retak Retak',
+                'Anggaran',
+                'Permukaan Perkerasan',
+                'Volume Kendaraan',
+                'Kerusakan Lain',
+                'Infrastruktur Lain'
+            ]
+        }
+    ]
+
+    function init_select_preset() {
+        const preset_information_dom = document.getElementById('preset_information')
+        presetList[0][1].forEach((item, idx) => {
+            const pElement = document.createElement('p');
+            pElement.innerHTML = `Ranking: ${idx + 1} - ${item}`
+            preset_information_dom.appendChild(pElement)
+        })
+    }
+
+    init_select_preset()
+
+    // THIS IS USED FOR LISTEN TO PRESET INPUT CHANGE
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the <select> element by its id
+        const selectElement = document.getElementById('preset-list');
+
+        const preset_information_dom = document.getElementById('preset_information')
+
+        // Add event listener for 'change' event
+        selectElement.addEventListener('change', function () {
+            preset_information_dom.innerHTML = ""
+            const selectedValue = selectElement.value;
+            presetList[selectedValue - 1][selectedValue].forEach((item, idx) => {
+                const pElement = document.createElement('p');
+                pElement.innerHTML = `Ranking: ${idx + 1} - ${item}`
+                preset_information_dom.appendChild(pElement)
+            })
+        });
+    });
+
 
 </script>
 

@@ -42,19 +42,23 @@
                             <a class="nav-link" href="/">Beranda</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/kriteria">Pilih Kriteria</a>
+                            <a class="nav-link" href="/kriteria">Kriteria dan Subkriteria</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link active" href="/process">Proses AHP</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/result_history">Hasil Proses AHP</a>
                         </li>
                     </ul>
                 </div>
             </nav>
 
+
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
                 <div
                     class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">Dashboard Fuzzy AHP</h1>
+                    <h1 class="h2">Sistem Prioritas Penanganan Kerusakan Jalan</h1>
                 </div>
                 <h1 style="text-align: center; margin-block: 40px;">Proses Fuzzy AHP</h1>
 
@@ -110,8 +114,18 @@
 
                 </div>
 
-                <h3 style="display: none;" class="mx-4" id="insfrastruktur_lain_title">Kriteria Infrastruktur Lain</h3>
+                <h3 style="display: none;" class="mx-4" id="infrastruktur_lain_title">Kriteria Infrastruktur Lain</h3>
                 <div class="mx-4" id="infrastruktur_lain">
+
+                </div>
+
+                <h3 style="display: none;" class="mx-4" id="anggaran_title">Anggaran</h3>
+                <div class="mx-4" id="anggaran">
+
+                </div>
+
+                <h3 style="display: none;" class="mx-4" id="volume_kendaraan_title">Volume Kendaraan</h3>
+                <div class="mx-4" id="volume_kendaraan">
 
                 </div>
 
@@ -133,53 +147,65 @@
 
 <script>
 
+    const isValidSession = sessionStorage.getItem("credentials");
+    if(!isValidSession){
+        window.location.href = "/login"
+    }
+    
+
     const street_list = [];
     const body = JSON.parse(sessionStorage.getItem('body'));
 
     function buildModal(data) {
+        const modalId = 'dynamicModal';
+        let modalElement = document.getElementById(modalId);
 
-
-        // Example: Assuming data is JSON with modal content
-        const modalContent = `
-            <div class="modal fade" id="dynamicModal" tabindex="-1" role="dialog" aria-labelledby="dynamicModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="dynamicModalLabel">HASIL PROSES AHP</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
+        if (!modalElement) {
+            // Modal doesn't exist, create and append it
+            const modalContent = `
+            <div class="modal fade" id="${modalId}" tabindex="-1" role="dialog" aria-labelledby="dynamicModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="dynamicModalLabel">HASIL PROSES AHP</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" id="fuzzy_result">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-body" id="fuzzy_result">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                </div>
-                </div>
-            </div>
             </div>
         `;
 
-        // Append modal content to the body
-        document.body.insertAdjacentHTML('beforeend', modalContent);
-
-        const fuzzy_result = document.getElementById('fuzzy_result');
-
-        let sorted_rank = []
-        for (let idx = 1; idx <= data.length; idx++) {
-            var nama_jalan_value = street_list[idx - 1]
-            sorted_rank.push({ idx: idx, value: data[idx - 1], name: nama_jalan_value })
+            document.body.insertAdjacentHTML('beforeend', modalContent);
+            modalElement = document.getElementById(modalId);
         }
-        sorted_rank.sort((a, b) => b.value - a.value)
+
+        const fuzzy_result = modalElement.querySelector('#fuzzy_result');
+        fuzzy_result.innerHTML = '';  // Clear previous content
+
+        let sorted_rank = [];
+        for (let idx = 1; idx <= data.length; idx++) {
+            var nama_jalan_value = street_list[idx - 1];
+            sorted_rank.push({ idx: idx, value: data[idx - 1], name: nama_jalan_value });
+        }
+        sorted_rank.sort((a, b) => b.value - a.value);
+
         for (let idx = 1; idx <= sorted_rank.length; idx++) {
             var childElement = document.createElement('p');
             childElement.textContent = `${sorted_rank[idx - 1].name} - ${sorted_rank[idx - 1].value}`;
-            fuzzy_result.appendChild(childElement)
+            fuzzy_result.appendChild(childElement);
         }
 
         // Show the modal
-        $('#dynamicModal').modal('show');
+        $(`#${modalId}`).modal('show');
     }
+
 
     function formatString(inputString) {
         return inputString.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
@@ -190,6 +216,8 @@
     const retak_retak = document.getElementById("retak_retak")
     const kerusakan_lain = document.getElementById("kerusakan_lain")
     const infrastruktur_lain = document.getElementById("infrastruktur_lain")
+    const anggaran = document.getElementById("anggaran")
+    const volume_kendaraan = document.getElementById("volume_kendaraan")
 
     if (Object.keys(JSON.parse(sessionStorage.getItem('body'))).length === 0) {
         alert("Data Yang ingin di proses tidak valid");
@@ -205,6 +233,8 @@
     let retak_retak_content = header_table;
     let kerusakan_lain_content = header_table;
     let infrastruktur_lain_content = header_table;
+    let anggaran_content = header_table;
+    let volume_kendaraan_content = header_table;
 
     // Loop FOR TABLE HEADER
     Object.keys(body).forEach(kriteria => {
@@ -218,8 +248,14 @@
         if (kriteria === 'kerusakan_lain') {
             kerusakan_lain_content += "<th>Nama Jalan</th>";
         }
-        if (kriteria === 'insfrastruktur_lain') {
+        if (kriteria === 'infrastruktur_lain') {
             infrastruktur_lain_content += "<th>Nama Jalan</th>";
+        }
+        if (kriteria === 'anggaran') {
+            anggaran_content += "<th>Nama Jalan</th>";
+        }
+        if (kriteria === 'volume_kendaraan') {
+            volume_kendaraan_content += "<th>Nama Jalan</th>";
         }
 
         // Loop through the inner keys (susunan, kondisi_keadaan, etc.)
@@ -251,12 +287,27 @@
                 document.getElementById("kerusakan_lain_title").style.display = "block";
             }
 
-            if (kriteria === 'insfrastruktur_lain') {
+            if (kriteria === 'infrastruktur_lain') {
                 infrastruktur_lain_content += `
                     <th>${formatString(subKriteria)}</th>
                 `
-                document.getElementById("insfrastruktur_lain_title").style.display = "block";
+                document.getElementById("infrastruktur_lain_title").style.display = "block";
             }
+
+            if (kriteria === 'anggaran') {
+                anggaran_content += `
+                    <th>Anggaran</th>
+                `
+                document.getElementById("anggaran_title").style.display = "block";
+            }
+
+            if (kriteria === 'volume_kendaraan') {
+                volume_kendaraan_content += `
+                    <th>Volume Kendaraan</th>
+                `
+                document.getElementById("volume_kendaraan_title").style.display = "block";
+            }
+
         })
 
 
@@ -266,19 +317,24 @@
     retak_retak_content += `</tr> </thead> <tbody id="retak_retak_tbody"> </tbody> </table>`;
     kerusakan_lain_content += `</tr> </thead> <tbody id="kerusakan_lain_tbody"> </tbody> </table>`;
     infrastruktur_lain_content += `</tr> </thead> <tbody id="infrastruktur_lain_tbody"> </tbody> </table>`;
+    anggaran_content += `</tr> </thead> <tbody id="anggaran_tbody"> </tbody> </table>`;
+    volume_kendaraan_content += `</tr> </thead> <tbody id="volume_kendaraan_tbody"> </tbody> </table>`;
 
     permukaan_perkerasan.innerHTML = permukaan_perkerasan_content;
     retak_retak.innerHTML = retak_retak_content;
     kerusakan_lain.innerHTML = kerusakan_lain_content;
     infrastruktur_lain.innerHTML = infrastruktur_lain_content;
-
+    anggaran.innerHTML = anggaran_content;
+    volume_kendaraan.innerHTML = volume_kendaraan_content;
 
     // this is used to post data
     let post_data = {
         "permukaan_perkerasan": [],
         "retak_retak": [],
         "kerusakan_lain": [],
-        "insfrastruktur_lain": []
+        "infrastruktur_lain": [],
+        "anggaran": [],
+        "volume_kendaraan": []
     }
 
     function render_row_table() {
@@ -294,13 +350,15 @@
             persen_luas: [{ name: "Tidak Ada", value: 0 }, { name: "< 10% Luas", value: 0.33 }, { name: "10 - 30% Luas", value: 0.66 }, { name: "> 30% Luas", value: 1 }],
             jumlah_lubang: [{ name: "Tidak Ada", value: 0 }, { name: "1/100 M", value: 0.33 }, { name: "2-5/100 M", value: 0.66 }, { name: "> 5/100 M", value: 1 }],
             ukuran_lubang: [{ name: "Tidak Ada", value: 0 }, { name: "Kecil-Dangkal", value: 0.33 }, { name: "Kecil-Dalam", value: 0.5 }, { name: "Besar-Dangkal", value: 0.75 }, { name: "Besar-Dalam", value: 1 }],
-            bekas_roda: [{ name: "Tidak Ada", value: 0 }, { name: "<input 1 cm", value: 0.25 }, { name: "1 - 3 cm", value: 0.5 }, { name: "3 cm", value: 1 }],
+            bekas_roda: [{ name: "Tidak Ada", value: 0 }, { name: "< 1 cm", value: 0.25 }, { name: "1 - 3 cm", value: 0.5 }, { name: "3 cm", value: 1 }],
             kerusakan_tepi: [{ name: "Tidak Ada", value: 0 }, { name: "Ringan", value: 0.5 }, { name: "Berat", value: 1 }],
             kondisi_bahu: [{ name: "Tidak Ada", value: 0 }, { name: "Baik/Rata", value: 0.33 }, { name: "Erosi Ringan", value: 0.66 }, { name: "Erosi Barat", value: 1 }],
             permukaan_bahu: [{ name: "Tidak Ada", value: 0 }, { name: "Diatas Permukaan Jalan", value: 0.25 }, { name: "Rata dengan permukaan jalan", value: 0.5 }, { name: "Dibawah permukaan jalan", value: 0.75 }, { name: "10 cm dibawah permukaan jalan", value: 1 }],
             kondisi_saluran_samping: [{ name: "Tidak Ada", value: 0 }, { name: "Bersih", value: 0.25 }, { name: "Tertutup/Tersumbat", value: 0.5 }, { name: "Erosi", value: 1 }],
             kerusakan_lereng: [{ name: "Tidak Ada", value: 0 }, { name: "Longsor / Runtuh", value: 1 }],
-            trotoar: [{ name: "Tidak Ada", value: 0 }, { name: "Baik/Aman", value: 0.5 }, { name: "Berbahaya", value: 1 }]
+            trotoar: [{ name: "Tidak Ada", value: 0 }, { name: "Baik/Aman", value: 0.5 }, { name: "Berbahaya", value: 1 }],
+            anggaran: [{ name: ">= 200 Juta", value: 0 }, { name: "< 200 Juta", value: 1 }],
+            volume_kendaraan: [{ name: "Sepi", value: 0 }, { name: "Sedang", value: 0.5 }, { name: "Ramai", value: 1 }]
         }
 
         // ** INITIAL  VALUE FOR OPTION LIST
@@ -308,6 +366,8 @@
         let retak_retak_row_content = "";
         let kerusakan_lain_row_content = "";
         let infrastruktur_lain_row_content = "";
+        let anggaran_row_content = "";
+        let volume_kendaraan_row_content = "";
 
         Object.keys(post_data).forEach(kriteria => {
 
@@ -326,9 +386,17 @@
                         kerusakan_lain_row_content += `<tr>`
                         kerusakan_lain_row_content += `<td>${street_list[index]}</td>`
                     }
-                    if (kriteria === 'insfrastruktur_lain') {
+                    if (kriteria === 'infrastruktur_lain') {
                         infrastruktur_lain_row_content += `<tr>`
                         infrastruktur_lain_row_content += `<td>${street_list[index]}</td>`
+                    }
+                    if (kriteria === 'anggaran') {
+                        anggaran_row_content += `<tr>`
+                        anggaran_row_content += `<td>${street_list[index]}</td>`
+                    }
+                    if (kriteria === 'volume_kendaraan') {
+                        volume_kendaraan_row_content += `<tr>`
+                        volume_kendaraan_row_content += `<td>${street_list[index]}</td>`
                     }
 
                     Object.keys(obj).forEach((key) => {
@@ -342,24 +410,34 @@
                             if (kriteria === 'permukaan_perkerasan') permukaan_perkerasan_row_content += `<td>${value_name}</td> `
                             if (kriteria === 'retak_retak') retak_retak_row_content += `<td>${value_name}</td> `
                             if (kriteria === 'kerusakan_lain') kerusakan_lain_row_content += `<td>${value_name}</td> `
-                            if (kriteria === 'insfrastruktur_lain') infrastruktur_lain_row_content += `<td>${value_name}</td> `
-
+                            if (kriteria === 'infrastruktur_lain') infrastruktur_lain_row_content += `<td>${value_name}</td> `
+                            if (kriteria === 'anggaran') anggaran_row_content += `<td>${value_name}</td> `
+                            if (kriteria === 'volume_kendaraan') volume_kendaraan_row_content += `<td>${value_name}</td> `
                         }
 
                     })
 
-                    if (kriteria === 'permukaan_perkerasan') permukaan_perkerasan_row_content += `</tr>`
+
+                    if (kriteria === 'permukaan_perkerasan') {
+                        permukaan_perkerasan_row_content += `<td><button class="btn btn-danger" onclick="delete_item(${index})">Delete</button></td>`
+                        permukaan_perkerasan_row_content += `</tr>`
+                    }
                     if (kriteria === 'retak_retak') retak_retak_row_content += `</tr>`
                     if (kriteria === 'kerusakan_lain') kerusakan_lain_row_content += `</tr>`
-                    if (kriteria === 'insfrastruktur_lain') infrastruktur_lain_row_content += `</tr>`
-
+                    if (kriteria === 'infrastruktur_lain') infrastruktur_lain_row_content += `</tr>`
+                    if (kriteria === 'anggaran') anggaran_row_content += `</tr>`
+                    if (kriteria === 'volume_kendaraan') volume_kendaraan_row_content += `</tr>`
                 })
             }
         })
+
+
         document.getElementById("permukaan_perkerasan_tbody").innerHTML = permukaan_perkerasan_row_content;
         document.getElementById("retak_retak_tbody").innerHTML = retak_retak_row_content;
         document.getElementById("kerusakan_lain_tbody").innerHTML = kerusakan_lain_row_content;
         document.getElementById("infrastruktur_lain_tbody").innerHTML = infrastruktur_lain_row_content;
+        document.getElementById("anggaran_tbody").innerHTML = anggaran_row_content;
+        document.getElementById("volume_kendaraan_tbody").innerHTML = volume_kendaraan_row_content;
     }
 
     function information_modal_trigger() {
@@ -381,7 +459,9 @@
             permukaan_bahu: [{ name: "Tidak Ada", value: 0 }, { name: "Diatas Permukaan Jalan", value: 0.25 }, { name: "Rata dengan permukaan jalan", value: 0.5 }, { name: "Dibawah permukaan jalan", value: 0.75 }, { name: "10 cm dibawah permukaan jalan", value: 1 }],
             kondisi_saluran_samping: [{ name: "Tidak Ada", value: 0 }, { name: "Bersih", value: 0.25 }, { name: "Tertutup/Tersumbat", value: 0.5 }, { name: "Erosi", value: 1 }],
             kerusakan_lereng: [{ name: "Tidak Ada", value: 0 }, { name: "Longsor / Runtuh", value: 1 }],
-            trotoar: [{ name: "Tidak Ada", value: 0 }, { name: "Baik/Aman", value: 0.5 }, { name: "Berbahaya", value: 1 }]
+            trotoar: [{ name: "Tidak Ada", value: 0 }, { name: "Baik/Aman", value: 0.5 }, { name: "Berbahaya", value: 1 }],
+            anggaran: [{ name: ">= 200 Juta", value: 0 }, { name: "< 200 Juta", value: 1 }],
+            volume_kendaraan: [{ name: "Sepi", value: 0 }, { name: "Sedang", value: 0.5 }, { name: "Ramai", value: 1 }]
         }
 
         const modal_body_dom = document.getElementById("modal_body");
@@ -439,26 +519,59 @@
     }
 
     function process_fuzzy() {
-
         if (street_list.length < 2) {
             alert("Data Tidak Valid! Mohon Input Minimal 2 Data Jalan");
             return;
         }
 
-        fetch('/input_fuzzy', {
+        // Example postData object - ensure it's defined and structured correctly
+        const postData = JSON.parse(sessionStorage.getItem("temp_post_data"));
+
+        fetch(`/input_fuzzy/${localStorage.getItem('preset')}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(post_data)  // Stringify postData before sending
-        }).then(response => response.json())
+            body: JSON.stringify(postData)  // Ensure postData is correctly defined
+        })
+            .then(response => response.json())
             .then(data => {
-                console.log(data)
-                buildModal(data);
+
+                buildModal(data); // Example function to handle response data from '/input_fuzzy'
+
+                // Second POST request to '/insert_result'
+                fetch('/insert_result', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        data: postData,
+                        result: data,  // Assuming 'data' is the response from '/input_fuzzy'
+                        street_list: street_list,
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Handle response from '/insert_result' if needed
+                        alert("Insert result successful");
+                    })
+                    .catch(error => {
+                        console.error('Error inserting result:', error);
+                    });
             })
             .catch(error => {
                 console.error('Error:', error);
             });
+    }
+
+
+    function delete_item(index) {
+        street_list.splice(index, 1)
+        Object.keys(post_data).forEach((kriteria) => {
+            post_data[kriteria].splice(index, 1)
+            render_row_table()
+        })
     }
 
 </script>
