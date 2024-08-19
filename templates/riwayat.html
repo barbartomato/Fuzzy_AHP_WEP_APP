@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuzzy AHP</title>
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            background-color: #343a40;
+            padding-top: 1rem;
+        }
+
+        .sidebar .nav-link {
+            color: #ffffff;
+        }
+
+        .sidebar .nav-link.active {
+            background-color: #007bff;
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-2 d-none d-md-block sidebar">
+                <div class="sidebar-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Beranda</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/kriteria">Kriteria dan Subkriteria</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/process">Proses AHP</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/result_history">Hasil Proses AHP</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+                <div
+                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Sistem Prioritas Penanganan Kerusakan Jalan</h1>
+                </div>
+                <h1 style="text-align: center; margin-block: 40px;">Hasil Proses AHP</h1>
+
+                <table class="table table-bordered">
+                    <thead>
+                        <td>data ID</td>
+                        <td>Waktu Pemrosesan</td>
+                        <td>List nama jalan</td>
+                    </thead>
+                    <tbody>
+                        {% for data in data %}
+                        <tr>
+                            <td>{{ data.id }}<button type="button" class=" ml-4 btn btn-outline-secondary"
+                                    data-toggle="modal" data-target="#exampleModal" onclick="getDetails({{ data.id }})">
+                                    Details
+                                </button></td>
+                            <td>{{ data.date }}</td>
+                            <td>{{ data.street_list }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Details</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div id="modal-body-result-details">
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+
+</body>
+
+<script src=" https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    const isValidSession = sessionStorage.getItem("credentials");
+    if(!isValidSession){
+        window.location.href = "/login"
+    }
+    const modal_body = document.getElementById("modal-body-result-details");
+
+    function getDetails(id) {
+        fetch(`/result_history/${id}`, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => response.json())
+            .then(dataArray => {
+
+                let content = '<div style="padding: 10px; width: 100%;">';
+
+                // ** Manipulate the modal details dom after the data from backend ready
+                // ** get the length of the street list as the number of rows
+                let data_length = parseInt(dataArray[0].result.length);
+                const data = dataArray[0].data;
+                const street_list = dataArray[0].street_list.split(', ');
+                const result = dataArray[0].result;
+
+                let sorted_rank = [];
+                for (let idx = 1; idx <= result.length; idx++) {
+                    var nama_jalan_value = street_list[idx - 1];
+                    sorted_rank.push({ idx: idx, value: result[idx - 1], name: nama_jalan_value });
+                }
+                sorted_rank.sort((a, b) => b.value - a.value);
+
+                content += `<h2>List Ranking Jalan</h2>`
+                content += '<table class="table table-bordered table-hover table-striped"> <tr><th>Rank</th><th>Jalan</th><th>Nilai</th></tr>';
+                sorted_rank.forEach((item, idx) => {
+                    content += `<tr><td>${idx + 1}</td><td>${item.name}</td><td>${item.value}</td></tr>`
+                });
+
+                content += '</table>';
+
+                // calling the lcoalstorage for label name of kriteria and subkriteria
+                const labels = JSON.parse(localStorage.getItem('labels'));
+
+
+
+                Object.keys(data).forEach((kriteria) => {
+                    if (data[kriteria].length !== 0) {
+                        content += `<h5 style='text-transform: uppercase;'>${kriteria.replace(/[_\d]/g, ' ')}</h5>`;
+
+                        content += "<hr><table style='width: 100%;' class='table table-bordered table-hover table-striped'>";
+                        content += "<thead><tr><th>Nama Jalan</th><th>Subkriteria</th><th>Nilai</th></tr></thead>";
+                        content += "<tbody>";
+
+                        data[kriteria].forEach((subkriteria) => {
+                            Object.keys(subkriteria).forEach((key) => {
+                                let property = key.replace(/_\d+$/, '');
+                                let index_street_list = parseInt(key.slice(-1), 10);
+
+                                const labelName = labels[property].filter(object => object.value == parseInt(subkriteria[key], 10))[0]['name'];
+                                content += `<tr><td>${street_list[index_street_list]}</td><td>${property.replace(/[_\d]/g, ' ')}</td><td>${labelName}</td></tr>`;
+                            });
+                        });
+
+                        content += "</tbody></table>";
+                    }
+                });
+
+                content += '</div>'; // Close outer div if it was opened earlier
+
+                modal_body.innerHTML = content
+            })
+    }
+
+</script>
+
+</html>
